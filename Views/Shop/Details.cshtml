@@ -1,0 +1,99 @@
+﻿@model AromaAura.Models.Product
+
+<div class="container mt-5" style="font-family: 'Poppins', sans-serif;">
+    <div class="mb-4">
+        <a href="/Shop" class="text-decoration-none text-primary">
+            <i class="bi bi-arrow-left fs-3"></i> Back to Shop
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="product-image text-center">
+                <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-lg" style="max-height: 500px;" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h1 class="display-5 fw-bold text-primary">@Model.Name</h1>
+            <p class="h4 text-danger">$@Model.Price</p>
+            <p class="mb-2"><strong>Category:</strong> @Model.Category</p>
+            <p class="mb-2"><strong>Stock:</strong> @Model.Stock</p>
+            <p class="mt-4 text-secondary">@Model.Description</p>
+
+            <div class="quantity-controls mb-4">
+                <label for="quantity" class="form-label"><strong>Quantity:</strong></label>
+                <div class="input-group" style="width: 200px;">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseQuantity()">
+                        <i class="bi bi-dash"></i>
+                    </button>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="@Model.Stock" class="form-control text-center" readonly />
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseQuantity()">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Add to Cart Form -->
+            <form method="post" action="/Cart/AddToCart">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <input type="hidden" id="formQuantity" name="quantity" value="1" />
+                <button type="submit" class="btn btn-success btn-lg w-100">
+                    <i class="bi bi-cart-plus"></i> Add to Cart
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Featured Products Section -->
+    <div class="mt-5">
+        <h2 class="text-center text-primary fw-bold">You May Also Like</h2>
+        <div class="row mt-4">
+            @if (ViewData["FeaturedProducts"] is IEnumerable<AromaAura.Models.Product> featuredProducts && featuredProducts.Any())
+            {
+                @foreach (var product in featuredProducts)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="@product.ImageUrl" class="card-img-top img-fluid" alt="@product.Name" style="height: 200px; object-fit: cover;" />
+                            <div class="card-body text-center">
+                                <h5 class="card-title fw-bold text-primary">@product.Name</h5>
+                                <p class="text-danger fw-bold">$@product.Price</p>
+                                <a href="/Shop/Details/@product.Id" class="btn btn-primary btn-sm">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted text-center">No featured products available.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function decreaseQuantity() {
+            const input = document.getElementById("quantity");
+            const formInput = document.getElementById("formQuantity");
+            const value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+                formInput.value = value - 1;
+            }
+        }
+
+        function increaseQuantity() {
+            const input = document.getElementById("quantity");
+            const formInput = document.getElementById("formQuantity");
+            const value = parseInt(input.value);
+            const max = parseInt(input.getAttribute("max"));
+            if (value < max) {
+                input.value = value + 1;
+                formInput.value = value + 1;
+            }
+        }
+    </script>
+}

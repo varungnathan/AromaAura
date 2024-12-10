@@ -1,0 +1,96 @@
+﻿@model IEnumerable<AromaAura.Models.Product>
+
+<h1 class="text-center my-4 text-primary fw-bold">Shop Our Products</h1>
+
+<div class="container mb-5">
+    <!-- Filters and Sorting -->
+    <form method="get" action="/Shop">
+        <div class="row">
+            <!-- Filter by Category -->
+            <div class="col-md-4">
+                <label for="category" class="form-label fw-bold">Filter by Category</label>
+                <select class="form-select" id="category" name="category" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    @if (ViewData["Categories"] is List<string> categories)
+                    {
+                        var selectedCategory = ViewData["SelectedCategory"]?.ToString();
+                        foreach (var category in categories)
+                        {
+                            if (category == selectedCategory)
+                            {
+                                @:
+                                <option value="@category" selected>@category</option>
+                            }
+                            else
+                            {
+                                @:
+                                <option value="@category">@category</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Sort by Price -->
+            <div class="col-md-4">
+                <label for="sortOrder" class="form-label fw-bold">Sort by</label>
+                <select class="form-select" id="sortOrder" name="sortOrder" onchange="this.form.submit()">
+                    @if (ViewData["SortOrder"]?.ToString() == "PriceLowToHigh")
+                    {
+                        @:
+                        <option value="PriceLowToHigh" selected>Price: Low to High</option>
+                        @:
+                        <option value="PriceHighToLow">Price: High to Low</option>
+                    }
+                    else if (ViewData["SortOrder"]?.ToString() == "PriceHighToLow")
+                    {
+                        @:
+                        <option value="PriceLowToHigh">Price: Low to High</option>
+                        @:
+                        <option value="PriceHighToLow" selected>Price: High to Low</option>
+                    }
+                    else
+                    {
+                        @:
+                        <option value="PriceLowToHigh">Price: Low to High</option>
+                        @:
+                        <option value="PriceHighToLow">Price: High to Low</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="col-md-4">
+                <label for="search" class="form-label fw-bold">Search Products</label>
+                <div class="input-group">
+                    <input type="text" id="search" name="search" class="form-control" placeholder="Search by name" />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Product Grid -->
+<div class="container">
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img class="card-img-top img-fluid" src="@product.ImageUrl" alt="@product.Name" style="height: 200px; object-fit: cover;" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold text-primary">@product.Name</h5>
+                        <p class="card-text text-truncate">@product.Description</p>
+                        <p class="text-danger fw-bold">$@product.Price</p>
+                        <a href="/Shop/Details/@product.Id" class="btn btn-primary mt-auto">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

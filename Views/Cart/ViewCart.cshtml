@@ -1,0 +1,67 @@
+﻿@model IEnumerable<AromaAura.Models.CartItem>
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary fw-bold">Your Cart</h2>
+
+    @if (!Model.Any())
+    {
+        <p class="text-center text-muted">Your cart is empty. Start shopping to add items.</p>
+        <div class="text-center">
+            <a href="/Shop" class="btn btn-primary">Shop Now</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <img src="@item.Product.ImageUrl" class="card-img-top img-fluid" alt="@item.Product.Name" style="height: 250px; object-fit: cover;" />
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Product.Name</h5>
+                            <p>Price: $@item.Product.Price</p>
+                            <p>Quantity: @item.Quantity</p>
+                            <p>Total: $@{
+                                    var total = item.Product.Price * item.Quantity; @total
+                                }</p>
+                            <a href="/Cart/RemoveFromCart/@item.Id" class="btn btn-danger">Remove</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Total Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <h4 class="text-end">Total: $@{
+                        var cartTotal = Model.Sum(i => i.Product.Price * i.Quantity); @cartTotal
+                    }</h4>
+                <div class="text-center mt-4">
+                    <a href="/Checkout" class="btn btn-success btn-lg">Proceed to Checkout</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .card {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .btn {
+        font-size: 1.1em;
+        padding: 10px 20px;
+    }
+
+    .card-title {
+        font-size: 1.2em;
+    }
+</style>
